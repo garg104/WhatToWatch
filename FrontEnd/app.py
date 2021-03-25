@@ -54,6 +54,26 @@ btn.place(x=220, y=500)
 
 
 
+
+def create:
+    first = firstName.get()
+    last = lastName.get()
+    emailText = email.get()
+    user = userName.get()
+    passwordText = password.get()
+    confirmPassword = confirm.get()
+    
+    print(first + " " + last + " " + emailText + " " + user + " " + passwordText + " " + confirmPassword)
+    
+    
+    
+    
+    
+
+
+
+
+
 window.title('WhatToWatch')
 window.geometry("600x600+10+10")
 window.mainloop()
