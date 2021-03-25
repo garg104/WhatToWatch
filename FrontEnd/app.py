@@ -48,14 +48,13 @@ confirm=Entry(window, fg='black', bg='red', bd=2, show="*")
 confirm.place(x=300, y=400)
 
 
-btn=Button(window, text="Create account", fg='blue', bg='red')
-btn.place(x=220, y=500)
 
 
 
 
 
-def create:
+
+def create():
     first = firstName.get()
     last = lastName.get()
     emailText = email.get()
@@ -66,6 +65,9 @@ def create:
     print(first + " " + last + " " + emailText + " " + user + " " + passwordText + " " + confirmPassword)
     
     
+
+btn=Button(window, text="Create account", fg='blue', bg='red', command=create)
+btn.place(x=220, y=500)
     
     
     
