@@ -1,3 +1,4 @@
+import backend as back
 from tkinter import *
 from tkinter import ttk
 #from PIL import Image, ImageTk
@@ -54,6 +55,9 @@ confirmLabel.place(x=150, y=400)
 confirm = Entry(window, fg=textcolor, bg=darkred, bd=2, show="*")
 confirm.place(x=300, y=400)
 
+print("USER INFO:")
+print(back.getUserInfo())
+
 
 def create():
     first = firstName.get()
@@ -68,8 +72,10 @@ def create():
     elif passwordText != confirmPassword:
         print("Passwords are not the same!")
     else:
-        print(first + " " + last + " " + emailText + " " +
+        print("Inserting with values: " + first + " " + last + " " + emailText + " " +
               user + " " + passwordText + " " + confirmPassword)
+        back.insert(None, userName.get(), firstName.get(),
+                    lastName.get(), email.get(), password.get())
         clear_fields()
 
 
@@ -82,10 +88,22 @@ def clear_fields():
     confirm.delete(0, 'end')
 
 
-btn = ttk.Button(window, text="Create account", command=create)
-btn.place(x=220, y=500)
+def populateFields():
+    infoLabel = Label(window, text=back.retrieve(userName.get()),
+                      fg=textcolor, bg=darkred, font=("Helvetica", 15))
+    infoLabel.place(x=5, y=590)
+
+
+createBtn = ttk.Button(window, text="Create account", command=create)
+createBtn.place(x=220, y=500)
+
+retrieveBtn = ttk.Button(
+    window, text="Retrieve account", command=populateFields)
+retrieveBtn.place(x=220, y=550)
 
 
 window.title('WhatToWatch')
-window.geometry("600x600+10+10")
+window.geometry("650x650+10+10")
 window.mainloop()
+
+back.close()
