@@ -1,3 +1,4 @@
+import backend as back
 from tkinter import *
 #from PIL import Image, ImageTk
 
@@ -47,37 +48,27 @@ confirmLabel.place(x=150, y=400)
 confirm=Entry(window, fg='black', bg='red', bd=2, show="*")
 confirm.place(x=300, y=400)
 
+print("USER INFO:")
+print(back.getUserInfo())
 
+def populateFields():
+    infoLabel=Label(window, text=back.retrieve(userName.get()), fg='black', bg='red', font=("Helvetica", 15))
+    infoLabel.place(x=5, y=590)
 
-
-
-
-
-
-def create():
-    first = firstName.get()
-    last = lastName.get()
-    emailText = email.get()
-    user = userName.get()
-    passwordText = password.get()
-    confirmPassword = confirm.get()
-    
-    print(first + " " + last + " " + emailText + " " + user + " " + passwordText + " " + confirmPassword)
-    
     
 
-btn=Button(window, text="Create account", fg='blue', bg='red', command=create)
-btn.place(x=220, y=500)
+createBtn=Button(window, text="Create account", fg='blue', bg='red', command=lambda :back.insert(None, userName.get(), firstName.get(), lastName.get(), email.get(), password.get()))
+createBtn.place(x=220, y=500)
+
+retrieveBtn=Button(window, text="Retrieve account", fg='blue', bg='red', command=populateFields)
+retrieveBtn.place(x=220, y=550)
     
     
     
-
-
-
-
-
 window.title('WhatToWatch')
-window.geometry("600x600+10+10")
+window.geometry("650x700+10+10")
 window.mainloop()
+
+back.close()
 
 
