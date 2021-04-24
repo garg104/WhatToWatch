@@ -14,6 +14,28 @@ cursor = cnx.cursor()
 
 globalUserInfo = "default"
 
+def newReview(userID, movieID, rating, comment):
+    #insert new review into MovieRevies table
+    query = "INSERT INTO MovieReviews(userID, movieID, rating, comment) " \
+        "VALUES (%s, %s, %s, %s);"
+    
+    values = (userID, movieID, rating, comment)
+    
+    try:
+        cursor.execute(query, values)
+    except:
+        print("Error connecting on insert new review")
+    cnx.commit()
+    print("review inserted")
+    
+    #update avg_rating value for movie that was just reviewed
+    query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " + movieID + ") WHERE movieID = " + movieID + ";"
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on update avg_rating")
+        return
+    
 
 def insert(userID, usrname, firstname, lastname, eml, psswd):
     query = "Insert INTO Users(userID, username, first_name, last_name, email, password) " \
@@ -31,11 +53,11 @@ def insert(userID, usrname, firstname, lastname, eml, psswd):
 
 def retrieve(usrname):
     query = "SELECT * FROM Users WHERE username = '" + usrname + "';"
-    print("QUERY: " + query)
+    #print("QUERY: " + query)
     try:
         cursor.execute(query)
     except:
-        print("Error connecting on retrieve")
+        print("Error connecting on retrieve user info")
         return
 
     for (userID, username, first_name, last_name, email, password) in cursor:
