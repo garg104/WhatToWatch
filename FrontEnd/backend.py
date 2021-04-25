@@ -14,6 +14,23 @@ cursor = cnx.cursor()
 
 globalUserInfo = "default"
 
+def getReviews(movieID):
+    #retrieve all reviews associated with specified movie
+    query = "SELECT username, comment, rating FROM Users NATURAL JOIN MovieReviews WHERE movieID = " + movieID + ";"
+    
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on getting reviews")
+        return
+    
+    reviews = []
+    
+    for (username, comment, rating) in cursor:
+        review = username + "\nRating: " + str(rating) + " | Comment: " + comment + "\n"
+        reviews.append(review)
+    return reviews
+
 def newReview(userID, movieID, rating, comment):
     #insert new review into MovieRevies table
     query = "INSERT INTO MovieReviews(userID, movieID, rating, comment) " \

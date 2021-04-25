@@ -23,7 +23,7 @@ class WhatToWatch(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, HomePage, NewReviewPage):
+        for F in (StartPage, HomePage, NewReviewPage, ViewReviewsPage):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -134,6 +134,9 @@ class HomePage(tk.Frame):
         self.newReviewBtn = tk.Button(self, text="Write New Review", command=lambda: controller.show_frame("NewReviewPage"))
         self.newReviewBtn.place(relx=0.5, y=350, anchor=CENTER)
         
+        self.viewReviewsBtn = tk.Button(self, text="View Reviews", command=lambda: controller.show_frame("ViewReviewsPage"))
+        self.viewReviewsBtn.place(relx=0.5, y=400, anchor=CENTER)
+        
         self.logoutBtn = tk.Button(self, text="Logout", command=lambda: controller.show_frame("StartPage"))
         self.logoutBtn.place(relx=0.5, y=550, anchor=CENTER)
 
@@ -167,6 +170,34 @@ class NewReviewPage(tk.Frame):
         rating = self.rating.get()
         comment = self.comment.get("1.0", END)
         back.newReview(userID, movieID, rating, comment)
+
+class ViewReviewsPage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, width=700, height=700, background=darkred)
+        self.controller = controller
+        label = tk.Label(self, text="Reviews", font=("Helvetica", 40))
+        label.pack(side="top", fill="x", pady=10)
+
+        self.reviews = tk.Text(self, height=5, width=80)
+        self.reviews.place(relx=0.5, y=150, anchor=CENTER)
+        self.viewReviews()
+        
+        self.homeButton = tk.Button(self, text="Done", command=lambda: controller.show_frame("HomePage"))
+        self.homeButton.place(relx=0.5, y=550, anchor=CENTER)
+    
+    #retrieves reviews for currMovieID, call each time currMovieID is updated
+    def viewReviews(self):
+        self.reviews.config(state=NORMAL)
+        movieID = WhatToWatch.currMovieID
+        reviewsList = back.getReviews(movieID)
+        print(reviewsList)
+        formattedReviews = ""
+        for r in reviewsList:
+            formattedReviews = formattedReviews + r
+        self.reviews.delete("1.0", END)
+        self.reviews.insert(END, formattedReviews)
+        self.reviews.config(state=DISABLED)
 
 
 #window.title('WhatToWatch')
