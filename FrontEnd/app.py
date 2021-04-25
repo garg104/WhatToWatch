@@ -14,8 +14,7 @@ window.configure(background=darkred)
 #label1.place(x=10, y=10)
 
 
-lbl = Label(window, text="Create Account", fg=textcolor,
-            bg=darkred, font=("Helvetica", 40))
+lbl = Label(window, text="Create Account", fg=textcolor, bg=darkred, font=("Helvetica", 40))
 lbl.place(x=170, y=50)
 
 
