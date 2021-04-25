@@ -35,6 +35,8 @@ def newReview(userID, movieID, rating, comment):
     except:
         print("Error connecting on update avg_rating")
         return
+    cnx.commit()
+    print("avg updated")
     
 
 def insert(userID, usrname, firstname, lastname, eml, psswd):

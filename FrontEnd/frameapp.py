@@ -8,6 +8,10 @@ darkred = "#B22222"
 textcolor = "white"
 
 class WhatToWatch(tk.Tk):
+
+    userID = "16"
+    currMovieID = "1817232"
+
     def __init__(self, *args, **kwargs):
         
         tk.Tk.__init__(self, *args, **kwargs)
@@ -19,7 +23,7 @@ class WhatToWatch(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, HomePage, PageTwo):
+        for F in (StartPage, HomePage, NewReviewPage):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -122,23 +126,47 @@ class StartPage(tk.Frame):
 class HomePage(tk.Frame):
 
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        tk.Frame.__init__(self, parent, width=700, height=700, background=darkred)
         self.controller = controller
-        label = tk.Label(self, text="This is page 1", font=("Helvetica", 40))
-        label.pack(side="top", fill="x", pady=10)
-        button = tk.Button(self, text="Go to the start page", command=lambda: controller.show_frame("StartPage"))
-        button.pack()
+        self.label = tk.Label(self, text="Home", font=("Helvetica", 40))
+        self.label.pack(side="top", fill="x", pady=10)
+        
+        self.newReviewBtn = tk.Button(self, text="Write New Review", command=lambda: controller.show_frame("NewReviewPage"))
+        self.newReviewBtn.place(relx=0.5, y=350, anchor=CENTER)
+        
+        self.logoutBtn = tk.Button(self, text="Logout", command=lambda: controller.show_frame("StartPage"))
+        self.logoutBtn.place(relx=0.5, y=550, anchor=CENTER)
 
-
-class PageTwo(tk.Frame):
+class NewReviewPage(tk.Frame):
 
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        tk.Frame.__init__(self, parent, width=700, height=700, background=darkred)
         self.controller = controller
-        label = tk.Label(self, text="This is page 2", font=("Helvetica", 40))
+        label = tk.Label(self, text="Movie Review", font=("Helvetica", 40))
         label.pack(side="top", fill="x", pady=10)
-        button = tk.Button(self, text="Go to the start page", command=lambda: controller.show_frame("StartPage"))
-        button.pack()
+        
+        self.ratingLabel = tk.Label(self, text="Rating (1-10)", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.ratingLabel.place(x=150, y=150)
+        self.rating = tk.Entry(self, fg=textcolor, bg=darkred, bd=2)
+        self.rating.place(x=300, y=150)
+
+        self.commentLabel = tk.Label(self, text="Comment", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.commentLabel.place(x=150, y=200)
+        self.comment = tk.Text(self, height=5, width=50)
+        self.comment.place(x=300, y=200)
+        
+        self.submitButton = tk.Button(self, text="Submit Review", command=self.submitReview)
+        self.submitButton.place(relx=0.5, y=350, anchor=CENTER)
+        
+        self.homeButton = tk.Button(self, text="Cancel", command=lambda: controller.show_frame("HomePage"))
+        self.homeButton.place(relx=0.5, y=550, anchor=CENTER)
+    
+    def submitReview(self):
+        userID = WhatToWatch.userID
+        movieID = WhatToWatch.currMovieID
+        rating = self.rating.get()
+        comment = self.comment.get("1.0", END)
+        back.newReview(userID, movieID, rating, comment)
 
 
 #window.title('WhatToWatch')
