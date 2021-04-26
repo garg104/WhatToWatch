@@ -14,39 +14,90 @@ cursor = cnx.cursor()
 
 globalUserInfo = "default"
 
-def getReviews(movieID):
-    #retrieve all reviews associated with specified movie
+
+def getMovieReviews(movieID):
+    # retrieve all reviews associated with specified movie id
     query = "SELECT username, comment, rating FROM Users NATURAL JOIN MovieReviews WHERE movieID = " + movieID + ";"
-    
+
     try:
         cursor.execute(query)
     except:
-        print("Error connecting on getting reviews")
+        print("Error connecting on getting movie reviews")
         return
-    
+
     reviews = []
-    
+
     for (username, comment, rating) in cursor:
-        review = username + "\nRating: " + str(rating) + " | Comment: " + comment + "\n"
+        review = username + "\nRating: " + \
+            str(rating) + " | Comment: " + comment + "\n"
         reviews.append(review)
     return reviews
 
+
+def getNumMovieReviews(movieID):
+    # retrieve number of reviews associated with specified movie id
+    args = [movieID, 0]
+    result = 0
+
+    try:
+        result = cursor.callproc('GetTotalMovieReviews', args)
+    except:
+        print("Error connecting on getting number of movie reviews")
+        return
+
+    return result[1]
+
+
+def getUserReviews(userID):
+    # retrieve all reviews associated with specified user id
+    query = "SELECT title, comment, rating FROM Users NATURAL JOIN MovieReviews NATURAL JOIN Movies WHERE userID = " + userID + ";"
+
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on getting user reviews")
+        return
+
+    reviews = []
+
+    for (username, comment, rating) in cursor:
+        review = username + "\nRating: " + \
+            str(rating) + " | Comment: " + comment + "\n"
+        reviews.append(review)
+    return reviews
+
+
+def getNumUserReviews(userID):
+    # retrieve number of reviews associated with specified user id
+    args = [userID, 0]
+    result = 0
+
+    try:
+        result = cursor.callproc('GetTotalUserReviews', args)
+    except:
+        print("Error connecting on getting number of user reviews")
+        return
+
+    return result[1]
+
+
 def newReview(userID, movieID, rating, comment):
-    #insert new review into MovieRevies table
+    # insert new review into MovieRevies table
     query = "INSERT INTO MovieReviews(userID, movieID, rating, comment) " \
         "VALUES (%s, %s, %s, %s);"
-    
+
     values = (userID, movieID, rating, comment)
-    
+
     try:
         cursor.execute(query, values)
     except:
         print("Error connecting on insert new review")
     cnx.commit()
     print("review inserted")
-    
-    #update avg_rating value for movie that was just reviewed
-    query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " + movieID + ") WHERE movieID = " + movieID + ";"
+
+    # update avg_rating value for movie that was just reviewed
+    query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " + \
+        movieID + ") WHERE movieID = " + movieID + ";"
     try:
         cursor.execute(query)
     except:
@@ -54,7 +105,7 @@ def newReview(userID, movieID, rating, comment):
         return
     cnx.commit()
     print("avg updated")
-    
+
 
 def insert(userID, usrname, firstname, lastname, eml, psswd):
     query = "Insert INTO Users(userID, username, first_name, last_name, email, password) " \

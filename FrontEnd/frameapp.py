@@ -11,7 +11,8 @@ textcolor = "white"
 class WhatToWatch(tk.Tk):
 
     userID = "16"
-    currMovieID = "1817232"
+    # currMovieID = "1817232"
+    currMovieID = "249516"
 
     def __init__(self, *args, **kwargs):
 
@@ -24,7 +25,7 @@ class WhatToWatch(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, HomePage, NewReviewPage, ViewReviewsPage):
+        for F in (StartPage, HomePage, NewReviewPage, ViewMovieReviewsPage, ViewUserReviewsPage):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -151,8 +152,12 @@ class HomePage(tk.Frame):
         self.newReviewBtn.place(relx=0.5, y=350, anchor=CENTER)
 
         self.viewReviewsBtn = ttk.Button(
-            self, text="View Reviews", command=lambda: controller.show_frame("ViewReviewsPage"))
+            self, text="View Movie Reviews", command=lambda: controller.show_frame("ViewMovieReviewsPage"))
         self.viewReviewsBtn.place(relx=0.5, y=400, anchor=CENTER)
+
+        self.viewReviewsBtn = ttk.Button(
+            self, text="View User Reviews", command=lambda: controller.show_frame("ViewUserReviewsPage"))
+        self.viewReviewsBtn.place(relx=0.5, y=450, anchor=CENTER)
 
         self.logoutBtn = ttk.Button(
             self, text="Logout", command=lambda: controller.show_frame("StartPage"))
@@ -196,7 +201,7 @@ class NewReviewPage(tk.Frame):
         back.newReview(userID, movieID, rating, comment)
 
 
-class ViewReviewsPage(tk.Frame):
+class ViewMovieReviewsPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, width=700,
@@ -205,19 +210,68 @@ class ViewReviewsPage(tk.Frame):
         label = tk.Label(self, text="Reviews", font=("Helvetica", 40))
         label.pack(side="top", fill="x", pady=10)
 
+        self.movieLabel = tk.Label(
+            self, text="Movie ID: " + WhatToWatch.currMovieID, fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.movieLabel.place(x=65, y=90)
+
+        num_movie_reviews = str(
+            back.getNumMovieReviews(WhatToWatch.currMovieID))
+        self.numLabel = tk.Label(
+            self, text="Number of Movie Reviews: " + num_movie_reviews, fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.numLabel.place(x=65, y=110)
+
         self.reviews = tk.Text(self, height=5, width=80)
-        self.reviews.place(relx=0.5, y=150, anchor=CENTER)
-        self.viewReviews()
+        self.reviews.place(relx=0.5, y=170, anchor=CENTER)
+        self.viewMovieReviews()
 
         self.homeButton = ttk.Button(
             self, text="Done", command=lambda: controller.show_frame("HomePage"))
         self.homeButton.place(relx=0.5, y=550, anchor=CENTER)
 
     # retrieves reviews for currMovieID, call each time currMovieID is updated
-    def viewReviews(self):
+    def viewMovieReviews(self):
         self.reviews.config(state=NORMAL)
         movieID = WhatToWatch.currMovieID
-        reviewsList = back.getReviews(movieID)
+        reviewsList = back.getMovieReviews(movieID)
+        print(reviewsList)
+        formattedReviews = ""
+        for r in reviewsList:
+            formattedReviews = formattedReviews + r
+        self.reviews.delete("1.0", END)
+        self.reviews.insert(END, formattedReviews)
+        self.reviews.config(state=DISABLED)
+
+
+class ViewUserReviewsPage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, width=700,
+                          height=700, background=darkred)
+        self.controller = controller
+        label = tk.Label(self, text="Reviews", font=("Helvetica", 40))
+        label.pack(side="top", fill="x", pady=10)
+
+        self.userLabel = tk.Label(
+            self, text="User ID: " + WhatToWatch.userID, fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.userLabel.place(x=65, y=90)
+
+        num_user_reviews = str(back.getNumUserReviews(WhatToWatch.userID))
+        self.numLabel = tk.Label(
+            self, text="Number of User Reviews: " + num_user_reviews, fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.numLabel.place(x=65, y=110)
+
+        self.reviews = tk.Text(self, height=5, width=80)
+        self.reviews.place(relx=0.5, y=180, anchor=CENTER)
+        self.viewUserReviews()
+
+        self.homeButton = ttk.Button(
+            self, text="Done", command=lambda: controller.show_frame("HomePage"))
+        self.homeButton.place(relx=0.5, y=550, anchor=CENTER)
+
+    # retrieves reviews for currUserID, call each time currUserID is updated
+    def viewUserReviews(self):
+        self.reviews.config(state=NORMAL)
+        reviewsList = back.getUserReviews(WhatToWatch.userID)
         print(reviewsList)
         formattedReviews = ""
         for r in reviewsList:
