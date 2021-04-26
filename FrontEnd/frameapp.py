@@ -233,7 +233,7 @@ class ViewMovieReviewsPage(tk.Frame):
         self.reviews.config(state=NORMAL)
         movieID = WhatToWatch.currMovieID
         reviewsList = back.getMovieReviews(movieID)
-        print(reviewsList)
+        # print(reviewsList)
         formattedReviews = ""
         for r in reviewsList:
             formattedReviews = formattedReviews + r
@@ -272,7 +272,7 @@ class ViewUserReviewsPage(tk.Frame):
     def viewUserReviews(self):
         self.reviews.config(state=NORMAL)
         reviewsList = back.getUserReviews(WhatToWatch.userID)
-        print(reviewsList)
+        # print(reviewsList)
         formattedReviews = ""
         for r in reviewsList:
             formattedReviews = formattedReviews + r
