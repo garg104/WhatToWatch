@@ -25,7 +25,7 @@ class WhatToWatch(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, HomePage, NewReviewPage, ViewMovieReviewsPage, ViewUserReviewsPage):
+        for F in (StartPage, HomePage, NewReviewPage, ViewMovieReviewsPage, ViewUserReviewsPage, ViewSearchMovies):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -149,19 +149,23 @@ class HomePage(tk.Frame):
 
         self.newReviewBtn = ttk.Button(
             self, text="Write New Review", command=lambda: controller.show_frame("NewReviewPage"))
-        self.newReviewBtn.place(relx=0.5, y=350, anchor=CENTER)
+        self.newReviewBtn.place(relx=0.5, y=250, anchor=CENTER)
 
         self.viewReviewsBtn = ttk.Button(
             self, text="View Movie Reviews", command=lambda: controller.show_frame("ViewMovieReviewsPage"))
-        self.viewReviewsBtn.place(relx=0.5, y=400, anchor=CENTER)
+        self.viewReviewsBtn.place(relx=0.5, y=300, anchor=CENTER)
 
         self.viewReviewsBtn = ttk.Button(
             self, text="View User Reviews", command=lambda: controller.show_frame("ViewUserReviewsPage"))
-        self.viewReviewsBtn.place(relx=0.5, y=450, anchor=CENTER)
+        self.viewReviewsBtn.place(relx=0.5, y=350, anchor=CENTER)
+        
+        self.viewSearchBtn = ttk.Button(
+            self, text="Search Movies", command=lambda: controller.show_frame("ViewSearchMovies"))
+        self.viewSearchBtn.place(relx=0.5, y=400, anchor=CENTER)
 
         self.logoutBtn = ttk.Button(
             self, text="Logout", command=lambda: controller.show_frame("StartPage"))
-        self.logoutBtn.place(relx=0.5, y=550, anchor=CENTER)
+        self.logoutBtn.place(relx=0.5, y=450, anchor=CENTER)
 
 
 class NewReviewPage(tk.Frame):
@@ -278,6 +282,76 @@ class ViewUserReviewsPage(tk.Frame):
             formattedReviews = formattedReviews + r
         self.reviews.delete("1.0", END)
         self.reviews.insert(END, formattedReviews)
+        self.reviews.config(state=DISABLED)
+
+
+class ViewSearchMovies(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, width=700,
+                          height=700, background=darkred)
+        self.controller = controller
+        label = tk.Label(self, text="Search", font=("Helvetica", 40))
+        label.pack(side="top", fill="x", pady=10)
+
+        self.searchLabel = tk.Label(
+            self, text="Search By: ", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.searchLabel.place(x=65, y=90)
+        
+        v = StringVar()
+    
+        self.searchTitle = tk.Radiobutton(self, text="Title", variable=v, value="Title",fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.searchTitle.place(x=150, y=90)
+        
+        self.searchGenre = tk.Radiobutton(self, text="Genre", variable=v, value="Genre", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.searchGenre.place(x=270, y=90)
+        
+        self.searchAverageRating = tk.Radiobutton(self, text="Avg_rating", variable=v, value="Avg_rating", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.searchAverageRating.place(x=400, y=90)
+                
+        self.v = v
+
+        num_movie_reviews = str(back.getNumMovieReviews(WhatToWatch.currMovieID))
+        self.numLabel = tk.Label(
+            self, text="Parameter: ", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.numLabel.place(x=65, y=130)
+        
+        self.paramter = tk.Entry(self, fg=textcolor, bg=darkred, bd=2)
+        self.paramter.place(x=150, y=130)
+        
+        self.searchButton = ttk.Button(self, text="Search", command=self.viewSearchResults)
+        self.searchButton.place(x=450, y=140, anchor=CENTER)
+        
+        self.reviews = tk.Text(self, height=20, width=80)
+        self.reviews.place(relx=0.5, y=350, anchor=CENTER)
+        #self.viewSearchResults()
+        
+        
+
+        self.homeButton = ttk.Button(
+            self, text="Done", command=lambda: controller.show_frame("HomePage"))
+        self.homeButton.place(relx=0.5, y=550, anchor=CENTER)
+
+    # retrieves results for search paramters, call when search is hit
+    def viewSearchResults(self):
+        print("clicked")
+        print(self.v.get()) 
+        print(self.paramter.get())
+        self.reviews.config(state=NORMAL)
+        searchBy = self.v.get()
+        searchList = []
+        if searchBy == "Title":
+            searchList = back.searchTitle(self.paramter.get())
+        elif searchBy == "Genre":
+            searchList = back.searchGenre(self.paramter.get())
+        else:
+            searchList = back.searchAvg(self.paramter.get())
+        # print(reviewsList)
+        formattedSearch = ""
+        for s in searchList:
+            formattedSearch = formattedSearch + s
+        self.reviews.delete("1.0", END)
+        self.reviews.insert(END, formattedSearch)
         self.reviews.config(state=DISABLED)
 
 

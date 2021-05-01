@@ -135,6 +135,79 @@ def retrieve(usrname):
             ", first_name:" + first_name + ", last_name:" + last_name + ", email:" + email
     return globalUserInfo
 
+def deleteUser(usrname):
+    # delete the user from the database
+    # 1 - go through all the movie reviews and update the avergar rating of the movies
+    # 2 - drop the movie reviews table for the user_id
+    # 3 - delete the user fromt he users table
+    
+    query = "SELECT * FROM Users WHERE username = '" + usrname + "';"
+    #print("QUERY: " + query)
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on retrieve user info")
+        return
+
+    for (userID, username, first_name, last_name, email, password) in cursor:
+        globalUserInfo = "userID:" + str(userID) + ", username:" + username + \
+            ", first_name:" + first_name + ", last_name:" + last_name + ", email:" + email
+    return globalUserInfo
+
+
+def searchTitle(title):
+    query = "SELECT * FROM Movies WHERE Title = '" + title + "';"
+    print("QUERY1: " + query)
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on retrieve user info")
+        return
+    
+    results = []
+
+    for (m_id, c_title, c_year, c_duration, c_genre, c_desciption, c_avg_rating) in cursor:
+        result = "ID: " + str(m_id) + "| title:" + c_title + "| year:" + str(c_year) + \
+            "| duration:" + str(c_duration) + "| genre:" + c_genre + "| description:" + c_desciption + "| avg_rating:" + str(c_avg_rating) + "\n\n"
+        results.append(result)
+    return results
+
+def searchGenre(genre):
+    query = "SELECT * FROM Movies WHERE Genre = '" + genre + "';"
+    print("QUERY2: " + query)
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on retrieve user info")
+        return
+    
+    results = []
+
+    for (m_id, c_title, c_year, c_duration, c_genre, c_desciption, c_avg_rating) in cursor:
+        result = "ID: " + str(m_id) + "| title:" + c_title + "| year:" + str(c_year) + \
+            "| duration:" + str(c_duration) + "| genre:" + c_genre + "| description:" + c_desciption + "| avg_rating:" + str(c_avg_rating) + "\n\n"
+        results.append(result)
+    return results
+
+
+def searchAvg(avg_rating):
+    query = "SELECT * FROM Movies WHERE avg_rating >= '" + avg_rating + "';"
+    print("QUERY3: " + query)
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on retrieve user info")
+        return
+    
+    results = []
+
+    for (m_id, c_title, c_year, c_duration, c_genre, c_desciption, c_avg_rating) in cursor:
+        result = "ID: " + str(m_id) + "| title:" + c_title + "| year:" + str(c_year) + \
+            "| duration:" + str(c_duration) + "| genre:" + c_genre + "| description:" + c_desciption + "| avg_rating:" + str(c_avg_rating) + "\n\n"
+        results.append(result)
+    return results
+
+
 
 def getUserInfo():
     return globalUserInfo
