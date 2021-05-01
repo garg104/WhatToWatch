@@ -96,12 +96,30 @@ def newReview(userID, movieID, rating, comment):
     print("review inserted")
 
     # update avg_rating value for movie that was just reviewed
+    query0 = "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;"
+    try:
+        cursor.execute(query0)
+    except:
+        print("Error connecting on update avg_rating1")
+        return
+    query0 = "START TRANSACTION;"
+    try:
+        cursor.execute(query0)
+    except:
+        print("Error connecting on update avg_rating2")
+        return
     query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " + \
-        movieID + ") WHERE movieID = " + movieID + ";"
+        movieID + ") WHERE movieID = " + movieID + ";" 
     try:
         cursor.execute(query)
     except:
-        print("Error connecting on update avg_rating")
+        print("Error connecting on update avg_rating3")
+        return
+    query0 = "COMMIT;"
+    try:
+        cursor.execute(query0)
+    except:
+        print("Error connecting on update avg_rating4")
         return
     cnx.commit()
     print("avg updated")
@@ -122,26 +140,6 @@ def insert(userID, usrname, firstname, lastname, eml, psswd):
 
 
 def retrieve(usrname):
-    query = "SELECT * FROM Users WHERE username = '" + usrname + "';"
-    #print("QUERY: " + query)
-    try:
-        cursor.execute(query)
-    except:
-        print("Error connecting on retrieve user info")
-        return
-
-    for (userID, username, first_name, last_name, email, password) in cursor:
-        globalUserInfo = "userID:" + str(userID) + ", username:" + username + \
-            ", first_name:" + first_name + ", last_name:" + last_name + ", email:" + email
-    return globalUserInfo
-
-
-def deleteUser(usrname):
-    # delete the user from the database
-    # 1 - go through all the movie reviews and update the avergar rating of the movies
-    # 2 - drop the movie reviews table for the user_id
-    # 3 - delete the user fromt he users table
-    
     query = "SELECT * FROM Users WHERE username = '" + usrname + "';"
     #print("QUERY: " + query)
     try:

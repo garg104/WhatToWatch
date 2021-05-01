@@ -10,9 +10,11 @@ textcolor = "white"
 
 class WhatToWatch(tk.Tk):
 
-    userID = "15"
-    # currMovieID = "1817232"
-    currMovieID = "249516"
+    userID = "19"
+    currMovieID = "1817232"
+    # currMovieID = "249516"
+    #currMovieID = "12876132"
+    
 
     def __init__(self, *args, **kwargs):
 
