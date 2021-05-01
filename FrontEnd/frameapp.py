@@ -10,7 +10,7 @@ textcolor = "white"
 
 class WhatToWatch(tk.Tk):
 
-    userID = "16"
+    userID = "15"
     # currMovieID = "1817232"
     currMovieID = "249516"
 
@@ -166,6 +166,17 @@ class HomePage(tk.Frame):
         self.logoutBtn = ttk.Button(
             self, text="Logout", command=lambda: controller.show_frame("StartPage"))
         self.logoutBtn.place(relx=0.5, y=450, anchor=CENTER)
+        
+        self.deleteBtn = ttk.Button(
+            self, text="Delete Account", command=lambda: self.deleteAccount(controller))
+        self.deleteBtn.place(relx=0.5, y=500, anchor=CENTER)
+        
+    def deleteAccount(self, controller):
+        print("account delete clicked")
+        print(WhatToWatch.userID)
+        delete = back.deleteUser(WhatToWatch.userID)
+        print(delete)
+        controller.show_frame("StartPage")
 
 
 class NewReviewPage(tk.Frame):

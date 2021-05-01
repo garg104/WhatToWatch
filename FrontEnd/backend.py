@@ -135,6 +135,7 @@ def retrieve(usrname):
             ", first_name:" + first_name + ", last_name:" + last_name + ", email:" + email
     return globalUserInfo
 
+
 def deleteUser(usrname):
     # delete the user from the database
     # 1 - go through all the movie reviews and update the avergar rating of the movies
@@ -172,6 +173,7 @@ def searchTitle(title):
         results.append(result)
     return results
 
+
 def searchGenre(genre):
     query = "SELECT * FROM Movies WHERE Genre = '" + genre + "';"
     print("QUERY2: " + query)
@@ -208,6 +210,27 @@ def searchAvg(avg_rating):
     return results
 
 
+def deleteUser(user_id):
+    query = "DELETE FROM MovieReviews WHERE userID = " + user_id +";"
+    print("QUERY: " + query)
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on retrieve user info")
+        return
+    
+    cnx.commit()
+
+    query = "DELETE FROM Users WHERE userID = " + user_id +";"
+    print("QUERY: " + query)
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on retrieve user info")
+        return
+    
+    cnx.commit()
+    return "success"
 
 def getUserInfo():
     return globalUserInfo
