@@ -245,6 +245,28 @@ def editReview(user_id, review_id, update, rating):
     cnx.commit()
     return "success"
 
+def deleteReview(movie_id):
+    query = "DELETE FROM MovieReviews WHERE movieID = " + str(movie_id);
+    print(query)
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on Delete Review")
+        return
+
+    cnx.commit()
+
+    query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " + \
+            movie_id + ") WHERE movieID = " + movie_id + ";"
+    print(query)
+    try:
+        cursor.execute(query)
+    except:
+        print("Error updating average on Delete Review")
+        return
+    cnx.commit()
+    return "success"
+
 
 def getUserInfo():
     return globalUserInfo

@@ -309,11 +309,24 @@ class ViewUserReviewsPage(tk.Frame):
 
         self.searchButton = ttk.Button(
             self, text="Enter", command=self.editReview)
-        self.searchButton.place(x=135, y=450, anchor=W)
+        self.searchButton.place(x=165, y=435, anchor=W)
+
+        self.deleteLabel = tk.Label(
+            self, text="Enter the Review ID of the review you want to delete: ",
+            fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.deleteLabel.place(x=65, y=475, anchor=W)
+        self.delete_idLabel = tk.Label(
+            self, text="Review ID: ", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.delete_idLabel.place(x=65, y=500)
+        self.delete_id = tk.Entry(self, fg=textcolor, bg=darkred, bd=2)
+        self.delete_id.place(x=165, y=500)
+        self.deleteButton = ttk.Button(
+            self, text="Enter", command=self.deleteReview)
+        self.deleteButton.place(x=165, y=550, anchor=W)
 
         self.homeButton = ttk.Button(
             self, text="Done", command=lambda: controller.show_frame("HomePage"))
-        self.homeButton.place(relx=0.5, y=535, anchor=CENTER)
+        self.homeButton.place(relx=0.5, y=585, anchor=CENTER)
 
     # retrieves reviews for currUserID, call each time currUserID is updated
     def viewUserReviews(self):
@@ -332,11 +345,13 @@ class ViewUserReviewsPage(tk.Frame):
         update = self.new_review.get("1.0", END)
         user_id = WhatToWatch.userID
         rating = self.rating.get()
-        print(review_id)
-        print(update)
-        print(user_id)
-        print(rating)
         result = back.editReview(user_id, review_id, update, rating)
+        print(result)
+        return result
+
+    def deleteReview(self):
+        review_id = self.delete_id.get()
+        result = back.deleteReview(review_id)
         print(result)
         return result
 
