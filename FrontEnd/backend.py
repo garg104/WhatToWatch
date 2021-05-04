@@ -174,6 +174,7 @@ def searchTitle(title):
 
 def searchGenre(genre):
     query = "SELECT * FROM Movies WHERE Genre = '" + genre + "';"
+    values = (genre)
     print("QUERY2: " + query)
     try:
         cursor.execute(query)
@@ -209,20 +210,22 @@ def searchAvg(avg_rating):
 
 
 def deleteUser(user_id):
-    query = "DELETE FROM MovieReviews WHERE userID = " + user_id +";"
+    query = "DELETE FROM MovieReviews WHERE userID = %s;"
+    values = (user_id)
     print("QUERY: " + query)
     try:
-        cursor.execute(query)
+        cursor.execute(query, values)
     except:
         print("Error connecting on retrieve user info")
         return
     
     cnx.commit()
 
-    query = "DELETE FROM Users WHERE userID = " + user_id +";"
+    query = "DELETE FROM Users WHERE userID = %s;"
+    values = (user_id)
     print("QUERY: " + query)
     try:
-        cursor.execute(query)
+        cursor.execute(query, values)
     except:
         print("Error connecting on retrieve user info")
         return
@@ -233,11 +236,12 @@ def deleteUser(user_id):
 
 def editReview(user_id, review_id, update, rating):
     #update = update + "\n"
-    query = "UPDATE MovieReviews SET comment = \'" + update + "\', rating = " + str(rating) +\
-            " WHERE userID = " + user_id + " AND movieID = " + review_id + ";"
-    print(query)
+    query = "UPDATE MovieReviews SET comment = %s, rating = %s" \
+            " WHERE userID = %s AND movieID = %s;"
+    values = (update, str(rating), user_id, review_id)
+    print(query, values)
     try:
-        cursor.execute(query)
+        cursor.execute(query, values)
     except:
         print("Error connecting on edit review")
         return
@@ -245,27 +249,45 @@ def editReview(user_id, review_id, update, rating):
     cnx.commit()
     return "success"
 
-def deleteReview(movie_id):
-    query = "DELETE FROM MovieReviews WHERE movieID = " + str(movie_id);
+def deleteReview(movie_id, user_id):
+    query = "DELETE FROM MovieReviews WHERE movieID = %s AND userID = %s;"
+    values = (movie_id, user_id)
     print(query)
     try:
-        cursor.execute(query)
+        cursor.execute(query, values)
     except:
         print("Error connecting on Delete Review")
         return
 
     cnx.commit()
 
-    query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " + \
-            movie_id + ") WHERE movieID = " + movie_id + ";"
+    query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " \
+            "%s) WHERE movieID = %s;"
+    values = (movie_id, movie_id)
     print(query)
     try:
-        cursor.execute(query)
+        cursor.execute(query, values)
     except:
         print("Error updating average on Delete Review")
         return
     cnx.commit()
     return "success"
+
+def login(user, pswrd):
+    query = "SELECT userID FROM Users WHERE username = %s AND password = %s;"
+    values = (user, pswrd)
+    print(query)
+    try:
+        cursor.execute(query, values)
+    except:
+        print("Error logging in")
+        return
+    records = cursor.fetchall()
+    for row in records:
+        id = row[0]
+    #print(id)
+
+    return id
 
 
 def getUserInfo():

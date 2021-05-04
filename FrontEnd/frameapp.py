@@ -139,6 +139,15 @@ class StartPage(tk.Frame):
                           fg=textcolor, bg=darkred, font=("Helvetica", 15))
         infoLabel.place(x=5, y=590)
 
+    def login(self):
+        user = self.userName.get()
+        psswrd = self.password.get()
+        WhatToWatch.userID = str(back.login(user, psswrd))
+        print(WhatToWatch.userID)
+        if WhatToWatch.userID is not None:
+            WhatToWatch.show_frame("HomePage")
+
+
 
 class HomePage(tk.Frame):
 
@@ -351,7 +360,8 @@ class ViewUserReviewsPage(tk.Frame):
 
     def deleteReview(self):
         review_id = self.delete_id.get()
-        result = back.deleteReview(review_id)
+        user_id = WhatToWatch.userID
+        result = back.deleteReview(review_id, user_id)
         print(result)
         return result
 
