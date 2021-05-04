@@ -190,21 +190,26 @@ class NewReviewPage(tk.Frame):
         label = tk.Label(self, text="Movie Review", font=("Helvetica", 40))
         label.pack(side="top", fill="x", pady=10)
 
+        self.movidIDLabel = tk.Label(self, text="Movie ID", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.movidIDLabel.place(x=150, y=150)
+        self.movieID = tk.Entry(self, fg=textcolor, bg=darkred, bd=2)
+        self.movieID.place(x=300, y=150)
+        
         self.ratingLabel = tk.Label(
             self, text="Rating (1-10)", fg=textcolor, bg=darkred, font=("Helvetica", 15))
-        self.ratingLabel.place(x=150, y=150)
+        self.ratingLabel.place(x=150, y=200)
         self.rating = tk.Entry(self, fg=textcolor, bg=darkred, bd=2)
-        self.rating.place(x=300, y=150)
+        self.rating.place(x=300, y=200)
 
         self.commentLabel = tk.Label(
             self, text="Comment", fg=textcolor, bg=darkred, font=("Helvetica", 15))
-        self.commentLabel.place(x=150, y=200)
+        self.commentLabel.place(x=150, y=250)
         self.comment = tk.Text(self, height=5, width=50)
-        self.comment.place(x=300, y=200)
+        self.comment.place(x=300, y=250)
 
         self.submitButton = ttk.Button(
             self, text="Submit Review", command=self.submitReview)
-        self.submitButton.place(relx=0.5, y=350, anchor=CENTER)
+        self.submitButton.place(relx=0.5, y=400, anchor=CENTER)
 
         self.homeButton = ttk.Button(
             self, text="Cancel", command=lambda: controller.show_frame("HomePage"))
@@ -212,7 +217,7 @@ class NewReviewPage(tk.Frame):
 
     def submitReview(self):
         userID = WhatToWatch.userID
-        movieID = WhatToWatch.currMovieID
+        movieID = self.movieID.get()
         rating = self.rating.get()
         comment = self.comment.get("1.0", END)
         back.newReview(userID, movieID, rating, comment)
