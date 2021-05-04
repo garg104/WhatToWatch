@@ -50,7 +50,7 @@ def getNumMovieReviews(movieID):
 
 def getUserReviews(userID):
     # retrieve all reviews associated with specified user id
-    query = "SELECT title, comment, rating FROM Users NATURAL JOIN MovieReviews NATURAL JOIN Movies WHERE userID = " + userID + ";"
+    query = "SELECT title, comment, rating, movieID FROM Users NATURAL JOIN MovieReviews NATURAL JOIN Movies WHERE userID = " + userID + ";"
 
     try:
         cursor.execute(query)
@@ -60,9 +60,9 @@ def getUserReviews(userID):
 
     reviews = []
 
-    for (username, comment, rating) in cursor:
+    for (username, comment, rating, movieID) in cursor:
         review = username + "\nRating: " + \
-            str(rating) + " | Comment: " + comment + "\n"
+            str(rating) + " | Comment: " + comment + "Review ID: " + str(movieID) + "\n\n"
         reviews.append(review)
     return reviews
 
@@ -229,6 +229,22 @@ def deleteUser(user_id):
     
     cnx.commit()
     return "success"
+
+
+def editReview(user_id, review_id, update, rating):
+    #update = update + "\n"
+    query = "UPDATE MovieReviews SET comment = \'" + update + "\', rating = " + str(rating) +\
+            " WHERE userID = " + user_id + " AND movieID = " + review_id + ";"
+    print(query)
+    try:
+        cursor.execute(query)
+    except:
+        print("Error connecting on edit review")
+        return
+
+    cnx.commit()
+    return "success"
+
 
 def getUserInfo():
     return globalUserInfo

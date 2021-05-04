@@ -160,7 +160,7 @@ class HomePage(tk.Frame):
         self.viewReviewsBtn = ttk.Button(
             self, text="View User Reviews", command=lambda: controller.show_frame("ViewUserReviewsPage"))
         self.viewReviewsBtn.place(relx=0.5, y=350, anchor=CENTER)
-        
+
         self.viewSearchBtn = ttk.Button(
             self, text="Search Movies", command=lambda: controller.show_frame("ViewSearchMovies"))
         self.viewSearchBtn.place(relx=0.5, y=400, anchor=CENTER)
@@ -281,9 +281,34 @@ class ViewUserReviewsPage(tk.Frame):
         self.reviews.place(relx=0.5, y=180, anchor=CENTER)
         self.viewUserReviews()
 
+        # Edit Review Label
+        self.editLabel = tk.Label(
+            self, text="Enter the Review ID, the New Rating, and New Review and Press Enter to Edit Review: ",
+            fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.editLabel.place(x=65, y=250, anchor=W)
+        self.review_idLabel = tk.Label(
+            self, text="Review ID: ", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.review_idLabel.place(x=65, y=265)
+        self.review_id = tk.Entry(self, fg=textcolor, bg=darkred, bd=2)
+        self.review_id.place(x=165, y=265)
+        self.ratingLabel = tk.Label(
+            self, text="Rating (1-10): ", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.ratingLabel.place(x=65, y=300)
+        self.rating = tk.Entry(self, fg=textcolor, bg=darkred, bd=2)
+        self.rating.place(x=165, y=300)
+        self.new_reviewLabel = tk.Label(
+            self, text="New Review: ", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.new_reviewLabel.place(x=65, y=345)
+        self.new_review = tk.Text(self, height=5, width=60)
+        self.new_review.place(x=165, y=345)
+
+        self.searchButton = ttk.Button(
+            self, text="Enter", command=self.editReview)
+        self.searchButton.place(x=135, y=450, anchor=W)
+
         self.homeButton = ttk.Button(
             self, text="Done", command=lambda: controller.show_frame("HomePage"))
-        self.homeButton.place(relx=0.5, y=550, anchor=CENTER)
+        self.homeButton.place(relx=0.5, y=535, anchor=CENTER)
 
     # retrieves reviews for currUserID, call each time currUserID is updated
     def viewUserReviews(self):
@@ -296,6 +321,19 @@ class ViewUserReviewsPage(tk.Frame):
         self.reviews.delete("1.0", END)
         self.reviews.insert(END, formattedReviews)
         self.reviews.config(state=DISABLED)
+
+    def editReview(self):
+        review_id = self.review_id.get()
+        update = self.new_review.get("1.0", END)
+        user_id = WhatToWatch.userID
+        rating = self.rating.get()
+        print(review_id)
+        print(update)
+        print(user_id)
+        print(rating)
+        result = back.editReview(user_id, review_id, update, rating)
+        print(result)
+        return result
 
 
 class ViewSearchMovies(tk.Frame):
