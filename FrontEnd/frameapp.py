@@ -147,7 +147,8 @@ class StartPage(tk.Frame):
         psswrd = self.password.get()
         WhatToWatch.userID = str(back.login(user, psswrd))
         print(WhatToWatch.userID)
-        if WhatToWatch.userID is not None or WhatToWatch.userID is not "-1":
+        if WhatToWatch.userID is not None and WhatToWatch.userID is not "-1":
+
             controller.show_frame("HomePage")
 
 
@@ -163,9 +164,9 @@ class HomePage(tk.Frame):
         self.label.pack(side="top", fill="x", pady=10)
 
         # refresh button for pages, stuck in infinite recursion rn
-        self.refreshBtn = ttk.Button(
-            self, text="Refresh", command=self.refresh(parent, controller))
-        self.refreshBtn.place(relx=0.5, y=200, anchor=CENTER)
+        # self.refreshBtn = ttk.Button(
+        #    self, text="Refresh", command=self.refresh(parent, controller))
+        # self.refreshBtn.place(relx=0.5, y=200, anchor=CENTER)
 
         self.newReviewBtn = ttk.Button(
             self, text="Write New Review", command=lambda: controller.show_frame("NewReviewPage"))
