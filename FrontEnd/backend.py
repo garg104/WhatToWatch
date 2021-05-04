@@ -134,16 +134,13 @@ def newReview(userID, movieID, rating, comment):
 
 def insert(userID, usrname, firstname, lastname, eml, psswd):
     
-    #query0 = "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;"
-    #try:
-    #    cursor.execute(query0)
-    #except:
-    #    print("Error connecting on update avg_rating1")
-    #    return
+
+    
     query = "Insert INTO Users(userID, username, first_name, last_name, email, password) " \
         "VALUES (%s, %s, %s, %s, %s, %s);"
 
     values = (userID, usrname, firstname, lastname, eml, psswd)
+    print(query, values)
 
     try:
         cursor.execute(query, values)
@@ -151,8 +148,9 @@ def insert(userID, usrname, firstname, lastname, eml, psswd):
         print("Error connecting on insert")
     cnx.commit()
     print("user inserted")
-    
-    
+
+
+
 def retrieve(usrname):
     #query = "SELECT * FROM Users WHERE username = '" + usrname + "';"
     query = "SELECT * FROM Users WHERE username = %s;"
