@@ -111,14 +111,14 @@ def newReview(userID, movieID, rating, comment):
     except:
         print("Error connecting on update avg_rating2")
         return
-    #query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " + \
-    #    movieID + ") WHERE movieID = " + movieID + ";"
-    query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " \
-            "%s) WHERE movieID = %s;"
-    values = (int(movieID), int(movieID))
-    print(query, values)
+    query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " + \
+        movieID + ") WHERE movieID = " + movieID + ";"
+    #query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " \
+    #        "%s) WHERE movieID = %s;"
+    #values = (int(movieID), int(movieID))
+    print(query)
     try:
-        cursor.execute(query, values)
+        cursor.execute(query)
     except:
         print("Error connecting on update avg_rating3")
         return
@@ -148,13 +148,17 @@ def insert(userID, usrname, firstname, lastname, eml, psswd):
         return
     
     
+    #query = "Insert INTO Users(userID, username, first_name, last_name, email, password) " \
+    #    "VALUES (%s, %s, %s, %s, %s, %s);"
     query = "Insert INTO Users(userID, username, first_name, last_name, email, password) " \
-        "VALUES (%s, %s, %s, %s, %s, %s);"
+            "VALUES (" + userID +", " + usrname+ "," +firstname + ", " + lastname + ", " \
+            + eml+ "," + psswd + ");"
+    print(query)
 
     values = (userID, usrname, firstname, lastname, eml, psswd)
 
     try:
-        cursor.execute(query, values)
+        cursor.execute(query)
     except:
         print("Error connecting on insert")
     cnx.commit()

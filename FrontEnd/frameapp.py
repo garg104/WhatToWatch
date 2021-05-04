@@ -148,8 +148,8 @@ class StartPage(tk.Frame):
         WhatToWatch.userID = str(back.login(user, psswrd))
         print(WhatToWatch.userID)
         if WhatToWatch.userID is not None and WhatToWatch.userID is not "-1":
-
             controller.show_frame("HomePage")
+            self.clear_fields()
 
 
 
