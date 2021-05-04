@@ -10,7 +10,7 @@ textcolor = "white"
 
 class WhatToWatch(tk.Tk):
 
-    userID = "19"
+    userID = "-1"
     currMovieID = "1817232"
     # currMovieID = "249516"
     #currMovieID = "12876132"
@@ -53,6 +53,9 @@ class StartPage(tk.Frame):
         lbl = tk.Label(self, text="Create Account", fg=textcolor,
                        bg=darkred, font=("Helvetica", 40))
         lbl.place(x=170, y=50)
+
+        self.controller = controller
+        self.parent = parent
 
         self.firstNameLabel = tk.Label(
             self, text="First Name", fg=textcolor, bg=darkred, font=("Helvetica", 15))
@@ -101,7 +104,7 @@ class StartPage(tk.Frame):
         #self.retrieveBtn.place(x=220, y=550)
 
         self.LoginBtn = ttk.Button(
-            self, text="Login", command=lambda: controller.show_frame("HomePage"))
+            self, text="Login", command=lambda: self.login(parent, controller))
         self.LoginBtn.place(x=220, y=550)
 
         print("USER INFO:")
@@ -139,13 +142,13 @@ class StartPage(tk.Frame):
                           fg=textcolor, bg=darkred, font=("Helvetica", 15))
         infoLabel.place(x=5, y=590)
 
-    def login(self):
+    def login(self, parent, controller):
         user = self.userName.get()
         psswrd = self.password.get()
         WhatToWatch.userID = str(back.login(user, psswrd))
         print(WhatToWatch.userID)
-        if WhatToWatch.userID is not None:
-            WhatToWatch.show_frame("HomePage")
+        if WhatToWatch.userID is not None or WhatToWatch.userID is not "-1":
+            controller.show_frame("HomePage")
 
 
 
@@ -155,8 +158,14 @@ class HomePage(tk.Frame):
         tk.Frame.__init__(self, parent, width=700,
                           height=700, background=darkred)
         self.controller = controller
+        self.parent = parent
         self.label = tk.Label(self, text="Home", font=("Helvetica", 40))
         self.label.pack(side="top", fill="x", pady=10)
+
+        # refresh button for pages, stuck in infinite recursion rn
+        self.refreshBtn = ttk.Button(
+            self, text="Refresh", command=self.refresh(parent, controller))
+        self.refreshBtn.place(relx=0.5, y=200, anchor=CENTER)
 
         self.newReviewBtn = ttk.Button(
             self, text="Write New Review", command=lambda: controller.show_frame("NewReviewPage"))
@@ -188,6 +197,10 @@ class HomePage(tk.Frame):
         delete = back.deleteUser(WhatToWatch.userID)
         print(delete)
         controller.show_frame("StartPage")
+
+    def refresh(self, parent, controller):
+        self.destroy()
+        self.__init__(parent, controller)
 
 
 class NewReviewPage(tk.Frame):

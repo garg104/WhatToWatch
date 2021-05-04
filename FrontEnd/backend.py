@@ -18,7 +18,8 @@ globalUserInfo = "default"
 def getMovieReviews(movieID):
     # retrieve all reviews associated with specified movie id
     query = "SELECT username, comment, rating FROM Users NATURAL JOIN MovieReviews WHERE movieID = " + movieID + ";"
-
+    #query = "SELECT username, comment, rating FROM Users NATURAL JOIN MovieReviews WHERE movieID = %s;"
+    #values = (movieID)
     try:
         cursor.execute(query)
     except:
@@ -51,6 +52,8 @@ def getNumMovieReviews(movieID):
 def getUserReviews(userID):
     # retrieve all reviews associated with specified user id
     query = "SELECT title, comment, rating, movieID FROM Users NATURAL JOIN MovieReviews NATURAL JOIN Movies WHERE userID = " + userID + ";"
+    #query = "SELECT title, comment, rating, movieID FROM Users NATURAL JOIN MovieReviews NATURAL JOIN Movies WHERE userID = %s;"
+    #values = (userID)
 
     try:
         cursor.execute(query)
@@ -108,10 +111,14 @@ def newReview(userID, movieID, rating, comment):
     except:
         print("Error connecting on update avg_rating2")
         return
-    query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " + \
-        movieID + ") WHERE movieID = " + movieID + ";" 
+    #query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " + \
+    #    movieID + ") WHERE movieID = " + movieID + ";"
+    query = "UPDATE Movies SET avg_rating = (SELECT AVG(rating) FROM MovieReviews WHERE movieID = " \
+            "%s) WHERE movieID = %s;"
+    values = (int(movieID), int(movieID))
+    print(query, values)
     try:
-        cursor.execute(query)
+        cursor.execute(query, values)
     except:
         print("Error connecting on update avg_rating3")
         return
@@ -140,10 +147,12 @@ def insert(userID, usrname, firstname, lastname, eml, psswd):
 
 
 def retrieve(usrname):
-    query = "SELECT * FROM Users WHERE username = '" + usrname + "';"
+    #query = "SELECT * FROM Users WHERE username = '" + usrname + "';"
+    query = "SELECT * FROM Users WHERE username = %s;"
+    values = (usrname)
     #print("QUERY: " + query)
     try:
-        cursor.execute(query)
+        cursor.execute(query, values)
     except:
         print("Error connecting on retrieve user info")
         return
@@ -155,10 +164,12 @@ def retrieve(usrname):
 
 
 def searchTitle(title):
-    query = "SELECT * FROM Movies WHERE Title = '" + title + "';"
-    print("QUERY1: " + query)
+    #query = "SELECT * FROM Movies WHERE Title = '" + title + "';"
+    query = "SELECT * FROM Movies WHERE Title = %s;"
+    values = (title)
+    print("QUERY1: " + query, title)
     try:
-        cursor.execute(query)
+        cursor.execute(query, title)
     except:
         print("Error connecting on retrieve user info")
         return
@@ -173,11 +184,12 @@ def searchTitle(title):
 
 
 def searchGenre(genre):
-    query = "SELECT * FROM Movies WHERE Genre = '" + genre + "';"
+    #query = "SELECT * FROM Movies WHERE Genre = '" + genre + "';"
+    query = "SELECT * FROM Movies WHERE Genre = %s;"
     values = (genre)
     print("QUERY2: " + query)
     try:
-        cursor.execute(query)
+        cursor.execute(query, values)
     except:
         print("Error connecting on retrieve user info")
         return
@@ -210,22 +222,22 @@ def searchAvg(avg_rating):
 
 
 def deleteUser(user_id):
-    query = "DELETE FROM MovieReviews WHERE userID = %s;"
-    values = (user_id)
+    query = "DELETE FROM MovieReviews WHERE userID = " + user_id + ";"
+    #values = (user_id)
     print("QUERY: " + query)
     try:
-        cursor.execute(query, values)
+        cursor.execute(query)
     except:
         print("Error connecting on retrieve user info")
         return
     
     cnx.commit()
 
-    query = "DELETE FROM Users WHERE userID = %s;"
-    values = (user_id)
+    query = "DELETE FROM Users WHERE userID = " + user_id +";"
+    #values = (int(user_id))
     print("QUERY: " + query)
     try:
-        cursor.execute(query, values)
+        cursor.execute(query)
     except:
         print("Error connecting on retrieve user info")
         return
