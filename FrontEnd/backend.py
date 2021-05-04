@@ -126,6 +126,21 @@ def newReview(userID, movieID, rating, comment):
 
 
 def insert(userID, usrname, firstname, lastname, eml, psswd):
+    
+    query0 = "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;"
+    try:
+        cursor.execute(query0)
+    except:
+        print("Error connecting on update avg_rating1")
+        return
+    query0 = "START TRANSACTION;"
+    try:
+        cursor.execute(query0)
+    except:
+        print("Error connecting on update avg_rating2")
+        return
+    
+    
     query = "Insert INTO Users(userID, username, first_name, last_name, email, password) " \
         "VALUES (%s, %s, %s, %s, %s, %s);"
 
@@ -137,6 +152,14 @@ def insert(userID, usrname, firstname, lastname, eml, psswd):
         print("Error connecting on insert")
     cnx.commit()
     print("user inserted")
+    
+    
+    query0 = "COMMIT;"
+    try:
+        cursor.execute(query0)
+    except:
+        print("Error connecting on update avg_rating4")
+        return
 
 
 def retrieve(usrname):
