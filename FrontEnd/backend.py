@@ -169,12 +169,12 @@ def retrieve(usrname):
 
 
 def searchTitle(title):
-    #query = "SELECT * FROM Movies WHERE Title = '" + title + "';"
-    query = "SELECT * FROM Movies WHERE Title = %s;"
-    values = (title)
-    print("QUERY1: " + query, title)
+    query = "SELECT * FROM Movies WHERE Title = '" + title + "';"
+    # query = "SELECT * FROM Movies WHERE Title = %s;"
+    # values = (title)
+    print("QUERY1: " + query)
     try:
-        cursor.execute(query, values)
+        cursor.execute(query)
     except:
         print("Error connecting on retrieve user info")
         return
@@ -189,12 +189,12 @@ def searchTitle(title):
 
 
 def searchGenre(genre):
-    #query = "SELECT * FROM Movies WHERE Genre = '" + genre + "';"
-    query = "SELECT * FROM Movies WHERE Genre = %s;"
-    values = (genre)
+    query = "SELECT * FROM Movies WHERE Genre = '" + genre + "';"
+    # query = "SELECT * FROM Movies WHERE Genre = %s;"
+    # values = (genre)
     print("QUERY2: " + query)
     try:
-        cursor.execute(query, values)
+        cursor.execute(query)
     except:
         print("Error connecting on retrieve user info")
         return
