@@ -255,7 +255,7 @@ class ViewMovieReviewsPage(tk.Frame):
         label.pack(side="top", fill="x", pady=10)
 
         self.movie_idLabel = tk.Label(
-            self, text="Review ID: ", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+            self, text="Movie ID: ", fg=textcolor, bg=darkred, font=("Helvetica", 15))
         self.movie_idLabel.place(x=65, y=90)
         self.movie_id = tk.Entry(self, fg=textcolor, bg=darkred, bd=2)
         self.movie_id.place(x=165, y=90)
