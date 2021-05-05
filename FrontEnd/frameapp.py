@@ -10,8 +10,9 @@ textcolor = "white"
 
 class WhatToWatch(tk.Tk):
 
-    userID = "-1"
+    userID = "19"
     currMovieID = "1817232"
+    reviewsPageVar = 0
     # currMovieID = "249516"
     #currMovieID = "12876132"
     
@@ -148,6 +149,8 @@ class StartPage(tk.Frame):
         WhatToWatch.userID = str(back.login(user, psswrd))
         print(WhatToWatch.userID)
         if WhatToWatch.userID is not None and WhatToWatch.userID is not "-1":
+            # need to update homePage
+            # tk.update()
             controller.show_frame("HomePage")
             self.clear_fields()
 
@@ -199,14 +202,10 @@ class HomePage(tk.Frame):
         print(delete)
         controller.show_frame("StartPage")
 
-    def refresh(self, parent, controller):
-        self.destroy()
-        self.__init__(parent, controller)
-
-
 class NewReviewPage(tk.Frame):
 
     def __init__(self, parent, controller):
+
         tk.Frame.__init__(self, parent, width=700,
                           height=700, background=darkred)
         self.controller = controller
@@ -255,19 +254,31 @@ class ViewMovieReviewsPage(tk.Frame):
         label = tk.Label(self, text="Reviews", font=("Helvetica", 40))
         label.pack(side="top", fill="x", pady=10)
 
-        self.movieLabel = tk.Label(
-            self, text="Movie ID: " + WhatToWatch.currMovieID, fg=textcolor, bg=darkred, font=("Helvetica", 15))
-        self.movieLabel.place(x=65, y=90)
+        self.movie_idLabel = tk.Label(
+            self, text="Review ID: ", fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        self.movie_idLabel.place(x=65, y=90)
+        self.movie_id = tk.Entry(self, fg=textcolor, bg=darkred, bd=2)
+        self.movie_id.place(x=165, y=90)
+        self.movie_idButton = ttk.Button(
+            self, text="Enter", command=self.setMovieReviews)
+        self.movie_idButton.place(x=350, y=90)
+        # self.movieLabel = tk.Label(
+        #    self, text="Movie ID: " + WhatToWatch.currMovieID, fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        # self.movieLabel.place(x=65, y=90)
 
         num_movie_reviews = str(
             back.getNumMovieReviews(WhatToWatch.currMovieID))
-        self.numLabel = tk.Label(
-            self, text="Number of Movie Reviews: " + num_movie_reviews, fg=textcolor, bg=darkred, font=("Helvetica", 15))
-        self.numLabel.place(x=65, y=110)
+        # self.numLabel = tk.Label(
+        #    self, text="Number of Movie Reviews: " + num_movie_reviews, fg=textcolor, bg=darkred, font=("Helvetica", 15))
+        # self.numLabel.place(x=65, y=160)
 
         self.reviews = tk.Text(self, height=5, width=80)
-        self.reviews.place(relx=0.5, y=170, anchor=CENTER)
+        self.reviews.place(relx=0.5, y=175, anchor=CENTER)
         self.viewMovieReviews()
+
+        self.refreshButton = ttk.Button(
+            self, text="Refresh", command=self.viewMovieReviews)
+        self.refreshButton.place(relx=0.5, y=250, anchor=CENTER)
 
         self.homeButton = ttk.Button(
             self, text="Done", command=lambda: controller.show_frame("HomePage"))
@@ -286,18 +297,25 @@ class ViewMovieReviewsPage(tk.Frame):
         self.reviews.insert(END, formattedReviews)
         self.reviews.config(state=DISABLED)
 
+    def setMovieReviews(self):
+        movie_id = self.movie_id.get()
+        WhatToWatch.currMovieID = str(movie_id)
+        self.movie_id.delete(0, 'end')
+        print(WhatToWatch.currMovieID)
+
 
 class ViewUserReviewsPage(tk.Frame):
 
     def __init__(self, parent, controller):
+        self.parent = parent
+        self.controller = controller
         tk.Frame.__init__(self, parent, width=700,
                           height=700, background=darkred)
-        self.controller = controller
         label = tk.Label(self, text="Reviews", font=("Helvetica", 40))
         label.pack(side="top", fill="x", pady=10)
 
         self.userLabel = tk.Label(
-            self, text="User ID: " + WhatToWatch.userID, fg=textcolor, bg=darkred, font=("Helvetica", 15))
+            self, text="User: ", fg=textcolor, bg=darkred, font=("Helvetica", 15))
         self.userLabel.place(x=65, y=90)
 
         num_user_reviews = str(back.getNumUserReviews(WhatToWatch.userID))
@@ -347,9 +365,13 @@ class ViewUserReviewsPage(tk.Frame):
             self, text="Enter", command=self.deleteReview)
         self.deleteButton.place(x=165, y=550, anchor=W)
 
+        self.refreshButton = ttk.Button(
+            self, text="Refresh", command=self.viewUserReviews)
+        self.refreshButton.place(relx=0.5, y=585, anchor=CENTER)
         self.homeButton = ttk.Button(
             self, text="Done", command=lambda: controller.show_frame("HomePage"))
-        self.homeButton.place(relx=0.5, y=585, anchor=CENTER)
+        self.homeButton.place(relx=0.5, y=635, anchor=CENTER)
+        # WhatToWatch.reviewsPageVar = 0
 
     # retrieves reviews for currUserID, call each time currUserID is updated
     def viewUserReviews(self):
@@ -364,11 +386,15 @@ class ViewUserReviewsPage(tk.Frame):
         self.reviews.config(state=DISABLED)
 
     def editReview(self):
+        print("editReview!")
         review_id = self.review_id.get()
         update = self.new_review.get("1.0", END)
         user_id = WhatToWatch.userID
         rating = self.rating.get()
         result = back.editReview(user_id, review_id, update, rating)
+        self.review_id.delete(0, 'end')
+        self.new_review.delete(1.0, END)
+        self.rating.delete(0, 'end')
         print(result)
         return result
 
@@ -376,8 +402,23 @@ class ViewUserReviewsPage(tk.Frame):
         review_id = self.delete_id.get()
         user_id = WhatToWatch.userID
         result = back.deleteReview(review_id, user_id)
+        self.delete_id.delete(0, 'end')
         print(result)
         return result
+
+    def refresh(self):
+        print("userID: " + WhatToWatch.userID + ", reviewsPageVar: " + str(WhatToWatch.reviewsPageVar))
+
+        if WhatToWatch.reviewsPageVar == 0:
+            WhatToWatch.reviewsPageVar = 1
+            wTWatch = WhatToWatch()
+            # self.destroy()
+            # wTWatch.show_frame("ViewUserReviewsPage")
+            # WhatToWatch.frames[ViewUserReviewsPage].destroy()
+            # self.__init__(self.parent, self.controller)
+            self.viewUserReviews()
+
+        # WhatToWatch.reviewsPageVar = 0
 
 
 class ViewSearchMovies(tk.Frame):
