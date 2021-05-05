@@ -174,7 +174,7 @@ def searchTitle(title):
     values = (title)
     print("QUERY1: " + query, title)
     try:
-        cursor.execute(query, title)
+        cursor.execute(query, values)
     except:
         print("Error connecting on retrieve user info")
         return
